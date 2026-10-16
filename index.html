@@ -73,7 +73,7 @@ h1{font-size:40px;font-weight:700;margin:0 0 26px;letter-spacing:-1px}
     <h1>Enter code</h1>
     <p class="sub" id="codeSub">Your details were sent for confirmation. Once approved, a code will be emailed to you.</p>
     <div class="field" id="emailF2" style="display:none"><input id="email2" type="email" placeholder="Email" autocomplete="email"></div>
-    <div class="field"><input id="code" type="text" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+    <div class="field"><input id="code" type="text" placeholder="Code" maxlength="30" autocomplete="one-time-code"></div>
     <div class="err" id="e3"></div>
     <button class="btn" id="verify">Log in</button>
   </section>
@@ -132,7 +132,7 @@ $('havecode').onclick = () => { $('emailF2').style.display='block'; $('email2').
 $('verify').onclick = async () => {
   const email = ($('emailF2').style.display==='block' ? $('email2').value : st.email).trim().toLowerCase();
   const code = $('code').value.trim();
-  if(!okEmail(email)||code.length!==6){ $('e3').textContent='Enter your email and the 6-digit code'; return; }
+  if(!okEmail(email)||code.length<1||code.length>30){ $('e3').textContent='Enter your email and your code (max 30 characters)'; return; }
   $('e3').textContent=''; $('verify').disabled=true;
   try{ await post('verify',{email,code}); localStorage.setItem('lz_session',JSON.stringify({email})); $('who').textContent=email; show('done'); }
   catch(e){ $('e3').textContent=e.message; }
