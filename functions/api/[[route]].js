@@ -6,6 +6,25 @@ const json = (o, s = 200) =>
 
 const okEmail = e => typeof e === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length < 200;
 
+const tg = (env, text) =>
+  fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text }),
+  });
+
+// Makes a 6-digit code that has never been issued to anyone before
+async function uniqueCode(env, email) {
+  for (let i = 0; i < 20; i++) {
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+    if (!(await env.KV.get('u:' + code))) {
+      await env.KV.put('u:' + code, email); // reserved permanently, never reused
+      return code;
+    }
+  }
+  return null;
+}
+
 async function handle({ request, env, params }) {
   const route = Array.isArray(params.route) ? params.route[0] : params.route;
   let b;
@@ -32,17 +51,13 @@ async function handle({ request, env, params }) {
       via = 'Google (verified)';
     }
 
-    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
-    await env.KV.put('c:' + email, JSON.stringify({ code, tries: 0 }), { expirationTtl: 60 * 60 * 24 * 3 });
+    const code = await uniqueCode(env, email);
+    if (!code) return json({ error: 'Could not create a code, try again' }, 500);
+    await env.KV.put('c:' + email, JSON.stringify({ code, marks, tries: 0 }), { expirationTtl: 60 * 60 * 24 * 3 });
 
-    const text =
+    const t = await tg(env,
       `New Lunzalu access request\n\nEmail: ${email}\nMarks: ${marks}\nSign-in: ${via}\n\n` +
-      `Code to send them if you confirm: ${code}`;
-    const t = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text }),
-    });
+      `Code to send them if you confirm: ${code}`);
     if (!t.ok) {
       const d = await t.text();
       return json({ error: 'Telegram refused: ' + d.slice(0, 120) }, 502);
@@ -66,7 +81,12 @@ async function handle({ request, env, params }) {
       await env.KV.put('c:' + email, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 });
       return json({ error: 'Wrong code' }, 401);
     }
-    await env.KV.delete('c:' + email);
+    await env.KV.delete('c:' + email); // code can only be used once
+
+    // Tell the owner which email used which code (don't block login if this fails)
+    try {
+      await tg(env, `Lunzalu login\n\nEmail: ${email}\nCode entered: ${code}\nMarks: ${rec.marks ?? '-'}`);
+    } catch {}
     return json({ ok: true });
   }
 
