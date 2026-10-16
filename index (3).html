@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lunzalu assignment app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--bg:#fff;--fg:#0e0e0e;--muted:#8a8a8a;--line:#e3e3e3;--red:#ff444f;--red-d:#e63843;--green:#00c390}
+@media(prefers-color-scheme:dark){:root{--bg:#0e0e0e;--fg:#fff;--muted:#8a8a8a;--line:#2e2e2e}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif}
+.wrap{max-width:460px;margin:0 auto;padding:28px 20px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.logo{color:var(--red);font-weight:800;font-size:34px;letter-spacing:-1px;line-height:1}
+.logo small{display:block;font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);margin-top:4px}
+.lang{border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-size:16px}
+h1{font-size:40px;font-weight:700;margin:0 0 26px;letter-spacing:-1px}
+.sub{color:var(--muted);margin:-10px 0 24px;font-size:16px}
+.btn-o{width:100%;display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:999px;height:58px;padding:0 24px;font:600 18px Inter;margin-bottom:14px;cursor:pointer}
+.btn-o span{flex:1;text-align:center;margin-right:24px}
+.or{display:flex;align-items:center;gap:20px;color:var(--fg);margin:26px 0;font-size:18px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.field{position:relative;margin-bottom:34px}
+.field input{width:100%;height:60px;border:1px solid var(--line);border-radius:14px;background:transparent;color:var(--fg);padding:0 18px;font:400 18px Inter;outline:none}
+.field input:focus{border-color:var(--fg)}
+.badge{position:absolute;right:0;top:-10px;background:var(--green);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px 6px 0 6px}
+.btn{width:100%;height:68px;border:0;border-radius:999px;background:var(--red);color:#fff;font:700 20px Inter;cursor:pointer}
+.btn:active{background:var(--red-d)}
+.btn:disabled{opacity:.5}
+.foot{text-align:center;margin-top:34px;font-size:17px}
+.foot a{color:var(--fg);font-weight:500;text-decoration:underline;cursor:pointer}
+.err{color:var(--red);font-size:14px;margin:-22px 0 20px;min-height:18px}
+.back{background:none;border:0;color:var(--fg);font:500 16px Inter;padding:0;margin-bottom:18px;cursor:pointer}
+.ok{width:72px;height:72px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:38px;margin:30px 0 20px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <section id="s-login">
+    <div class="top"><div class="logo">lunzalu<small>ASSIGNMENT APP</small></div><div class="lang">🌐 EN</div></div>
+    <h1>Welcome back</h1>
+    <button class="btn-o" id="g">
+      <svg width="26" height="26" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.2C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.9l-7.9 6.2C6.5 42.6 14.6 48 24 48z"/></svg>
+      <span>Log in with Google</span>
+    </button>
+    <div class="or">or</div>
+    <div class="field"><span class="badge">Last used</span><input id="email" type="email" placeholder="Email" autocomplete="email" inputmode="email"></div>
+    <div class="err" id="e1"></div>
+    <button class="btn" id="go">Log in</button>
+    <div class="foot">Already have a code? <a id="havecode">Enter it</a></div>
+  </section>
+
+  <!-- MARKS -->
+  <section id="s-marks" class="hide">
+    <div class="top"><div class="logo">lunzalu<small>ASSIGNMENT APP</small></div><div class="lang">🌐 EN</div></div>
+    <button class="back" id="b1">← Back</button>
+    <h1>Your marks</h1>
+    <p class="sub">Enter your examination mark so we can confirm your access.</p>
+    <div class="field"><input id="marks" type="text" maxlength="30" placeholder="Examination mark" autocomplete="off"></div>
+    <div class="err" id="e2"></div>
+    <button class="btn" id="send">Submit</button>
+  </section>
+
+  <!-- CODE -->
+  <section id="s-code" class="hide">
+    <div class="top"><div class="logo">lunzalu<small>ASSIGNMENT APP</small></div><div class="lang">🌐 EN</div></div>
+    <h1>Enter code</h1>
+    <p class="sub" id="codeSub">Your details were sent for confirmation. Once approved, a code will be emailed to you.</p>
+    <div class="field" id="emailF2" style="display:none"><input id="email2" type="email" placeholder="Email" autocomplete="email"></div>
+    <div class="field"><input id="code" type="text" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+    <div class="err" id="e3"></div>
+    <button class="btn" id="verify">Log in</button>
+  </section>
+
+  <!-- DONE -->
+  <section id="s-done" class="hide">
+    <div class="top"><div class="logo">lunzalu<small>ASSIGNMENT APP</small></div></div>
+    <div class="ok">✓</div>
+    <h1>You're in</h1>
+    <p class="sub" id="who"></p>
+    <button class="btn" id="out">Log out</button>
+  </section>
+
+</div>
+<script>
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+const $ = id => document.getElementById(id);
+const st = {email:'', gtoken:''};
+const show = id => { ['login','marks','code','done'].forEach(s => $('s-'+s).classList.toggle('hide', s!==id)); };
+const post = async (path, body) => {
+  const r = await fetch('/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j = await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.error||('Server error '+r.status+' - check Cloudflare setup')); return j;
+};
+const okEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+try{ const s=JSON.parse(localStorage.getItem('lz_session')||'null'); if(s&&s.email){ $('who').textContent=s.email; show('done'); } }catch(e){}
+
+$('go').onclick = () => {
+  const e = $('email').value.trim().toLowerCase();
+  if(!okEmail(e)){ $('e1').textContent='Enter a valid email address'; return; }
+  $('e1').textContent=''; st.email=e; st.gtoken=''; show('marks');
+};
+$('g').onclick = () => {
+  if(!window.google){ $('e1').textContent='Google is not available right now'; return; }
+  google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID, scope:'openid email profile',
+    callback: async r => {
+      if(!r.access_token) return;
+      try{
+        const u = await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+r.access_token}})).json();
+        st.email=(u.email||'').toLowerCase(); st.gtoken=r.access_token; show('marks');
+      }catch(e){ $('e1').textContent='Google login failed'; }
+    }
+  }).requestAccessToken();
+};
+$('b1').onclick = () => show('login');
+$('send').onclick = async () => {
+  const m = $('marks').value.trim();
+  if(m.length<1||m.length>30){ $('e2').textContent='Enter your mark (max 30 characters)'; return; }
+  $('e2').textContent=''; $('send').disabled=true;
+  try{ await post('request',{email:st.email,marks:m,gtoken:st.gtoken}); $('emailF2').style.display='none'; show('code'); }
+  catch(e){ $('e2').textContent=e.message; }
+  $('send').disabled=false;
+};
+$('havecode').onclick = () => { $('emailF2').style.display='block'; $('email2').value=$('email').value; $('codeSub').textContent='Enter your email and the code you received.'; show('code'); };
+$('verify').onclick = async () => {
+  const email = ($('emailF2').style.display==='block' ? $('email2').value : st.email).trim().toLowerCase();
+  const code = $('code').value.trim();
+  if(!okEmail(email)||code.length!==6){ $('e3').textContent='Enter your email and the 6-digit code'; return; }
+  $('e3').textContent=''; $('verify').disabled=true;
+  try{ await post('verify',{email,code}); localStorage.setItem('lz_session',JSON.stringify({email})); $('who').textContent=email; show('done'); }
+  catch(e){ $('e3').textContent=e.message; }
+  $('verify').disabled=false;
+};
+$('out').onclick = () => { localStorage.removeItem('lz_session'); $('code').value=''; show('login'); };
+</script>
+</body>
+</html>
